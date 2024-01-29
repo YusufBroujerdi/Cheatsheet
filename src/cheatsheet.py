@@ -41,16 +41,30 @@ class SheetItem:
 
 
 
+class SheetItemEncoder(json.JSONEncoder):
+
+    def default(self, obj):
+
+        if isinstance(obj, SheetItem):
+            return {"title" : obj.title,
+                "content" : obj.content}
+        else:
+            return json.JSONEncoder.default(self, obj)
+
+
+
 class CheatSheet:
 
     sheet_tree : SheetItem
     current_node : SheetItem
+    cheat_sheet_path : str
 
-    def __init__(self, cheatsheet_src : str):
+    def __init__(self, cheat_sheet_path : str):
 
         self.sheet_tree = SheetItem('Root', [])
+        self.cheat_sheet_path = cheat_sheet_path
 
-        with open('../data/cheatsheet.txt', 'r') as file:
+        with open(self.cheat_sheet_path, 'r') as file:
             src : str = file.read()
 
         src_parsed = json.loads(src,
@@ -71,9 +85,13 @@ class CheatSheet:
                 CheatSheet.add_owners(item.content, item)
        
 
-    def __del__():
-        pass
+    def __del__(self):
 
+        json_text = json.dumps(self.sheet_tree.content,
+            cls = SheetItemEncoder)
+
+        with open(self.cheat_sheet_path, 'w') as file:
+            file.write(json_text)
         
 
 
