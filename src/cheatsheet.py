@@ -33,13 +33,7 @@ class SheetItem:
 
 
 def parse_sheet_item(node : dict) -> SheetItem:
-
-    if '__SheetItem__' in node:
-        return SheetItem(node['title'],
-                         None,
-                         node['content'])
-    else:
-        return node
+    return SheetItem(node['title'], None, node['content'])
 
 
 class CheatSheet:

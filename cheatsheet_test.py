@@ -6,46 +6,48 @@ import json
 
 cs_1 = '''
 [{"title" : "Section 1",
-    "content" : "Herro, my name is YouSniffYourTurdy"},
+        "content" : "Herro, my name is YouSniffYourTurdy"},
     {"title" : "Section 2",
-    "content" : "Some more content for ya"},
+        "content" : "Some more content for ya"},
     {"title" : "Yet Another Subsection",
-    "__SheetItem__" : true,
-    "content" : [{"title" : "Subsection 1",
-        "content" : "I'm in Subsection 1!"},
-        {"title" : "Subsection 2",
-        "content" : "I'm in Subsection 2!"}
+        "content" : [{"title" : "Subsection 1",
+                "content" : "I'm in Subsection 1!"},
+            {"title" : "Subsection 2",
+                "content" : "I'm in Subsection 2!"}
     ]},
     {"title" : "Last Subsection",
-    "__SheetItem__" : true,
-    "content" : [{"title" : "Last Subsubsection",
-        "__SheetItem__" : true,
-        "content" : [{"title" : "Last Subsubsubsection",
-            "content" : "Holy moly....."}
+        "content" : [{"title" : "Last Subsubsection",
+            "content" : [{"title" : "Last Subsubsubsection",
+                "content" : "Holy moly....."}
         ]}
     ]}
 ]
 '''
 
-js_1 = [{"title" : "Section 1",
-    "content" : "Herro, my name is YouSniffYourTurdy"},
-    {"title" : "Section 2",
-    "content" : "Some more content for ya"},
-    cs.SheetItem("Yet Another Subsection",
-    None,
-    [{"title" : "Subsection 1",
-        "content" : "I'm in Subsection 1!"},
-        {"title" : "Subsection 2",
-        "content" : "I'm in Subsection 2!"}
-    ]),
-    cs.SheetItem("Last Subsection",
-    None,
-    [cs.SheetItem("Last Subsubsection",
+js_1 = [cs.SheetItem("Section 1",
         None,
-        [{"title" : "Last Subsubsubsection",
-            "content" : "Holy moly....."}
+        "Herro, my name is YouSniffYourTurdy"),
+    cs.SheetItem("Section 2",
+        None,
+        "Some more content for ya"),
+    cs.SheetItem("Yet Another Subsection",
+        None,
+        [cs.SheetItem("Subsection 1",
+                None,
+                "I'm in Subsection 1!"),
+            cs.SheetItem("Subsection 2",
+                None,
+                "I'm in Subsection 2!")
+        ]),
+    cs.SheetItem("Last Subsection",
+        None,
+        [cs.SheetItem("Last Subsubsection",
+                None,
+                [cs.SheetItem("Last Subsubsubsection",
+                        None,
+                        "Holy moly.....")
+                ])
         ])
-    ])
 ]
 
 
@@ -59,11 +61,14 @@ class TestLoader(unittest.TestCase):
             return json.loads(file_text, object_hook=cs.parse_sheet_item)
 
         my_json = json_load(cs_1)
-        #assert(my_json == js_1)
 
-        assert(my_json[0]["title"] == "Section 1")
+        assert(my_json[0].title == "Section 1")
+        assert(my_json[0].content == "Herro, my name is YouSniffYourTurdy")
+        assert(my_json[1].owner == None)
         assert(my_json[2].title == "Yet Another Subsection")
         assert(js_1[2].title == "Yet Another Subsection")
+        assert(my_json[2].content[0].title == "Subsection 1")
+        #assert(my_json == js_1)
 
         
 
