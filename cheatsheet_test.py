@@ -25,26 +25,18 @@ cs_1 = '''
 '''
 
 js_1 = [cs.SheetItem("Section 1",
-        None,
         "Herro, my name is YouSniffYourTurdy"),
     cs.SheetItem("Section 2",
-        None,
         "Some more content for ya"),
     cs.SheetItem("Yet Another Subsection",
-        None,
         [cs.SheetItem("Subsection 1",
-                None,
                 "I'm in Subsection 1!"),
             cs.SheetItem("Subsection 2",
-                None,
                 "I'm in Subsection 2!")
         ]),
     cs.SheetItem("Last Subsection",
-        None,
         [cs.SheetItem("Last Subsubsection",
-                None,
                 [cs.SheetItem("Last Subsubsubsection",
-                        None,
                         "Holy moly.....")
                 ])
         ])

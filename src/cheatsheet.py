@@ -16,7 +16,7 @@ class SheetItem:
     content = None
 
 
-    def __init__(self, title, owner, content):
+    def __init__(self, title, content, owner = None):
 
         self.title = title
         self.owner = owner
@@ -33,7 +33,7 @@ class SheetItem:
 
 
 def parse_sheet_item(node : dict) -> SheetItem:
-    return SheetItem(node['title'], None, node['content'])
+    return SheetItem(node['title'], node['content'])
 
 
 class CheatSheet:
@@ -43,7 +43,7 @@ class CheatSheet:
 
     def __init__(cheatsheet_src : str):
 
-        self.sheet_tree = SheetItem('Root', None, [])
+        self.sheet_tree = SheetItem('Root', [])
 
         with open('src.txt', 'r') as file:
             src : str = file.read()
