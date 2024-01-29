@@ -56,12 +56,19 @@ class CheatSheet:
         src_parsed = json.loads(src,
             object_hook = SheetItem.parse_sheet_item)
 
-        self.sheet_tree.content = self.add_owners(src_parsed)
+        CheatSheet.add_owners(src_parsed)
+        self.sheet_tree.content = src_parsed
        
 
-    def add_owners(self, src_json : List[SheetItem]) -> List[SheetItem]:
+    def add_owners(src_json : List[SheetItem],
+                   current_owner : SheetItem = None) -> List[SheetItem]:
 
-        cheatsheet : dict = dict()
+        for item in src_json:
+
+            item.owner = current_owner
+
+            if item.content_type() == Content.Section:
+                CheatSheet.add_owners(item.content, item)
        
 
     def __del__():

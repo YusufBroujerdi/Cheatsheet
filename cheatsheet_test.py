@@ -1,5 +1,6 @@
 import unittest
 from src.cheatsheet import SheetItem
+from src.cheatsheet import CheatSheet
 import json
 
 
@@ -68,10 +69,18 @@ class TestLoader(unittest.TestCase):
 
     def test_adding_owners(self):
 
-        pass
+        CheatSheet.add_owners(self.parsed_json)
 
-        
+        assert(self.parsed_json[0].owner == None)
+        assert(self.parsed_json[2].content[0].owner.title == "Yet Another Subsection")
+        assert(self.parsed_json[2].content[1].owner.title == "Yet Another Subsection")
+        assert(self.parsed_json[3].owner == None)
+        assert(self.parsed_json[3].content[0].owner.title == "Last Subsection")
+        assert(self.parsed_json[3].content[0].content[0].owner.title == "Last Subsubsection")
 
+
+       
+       
 if __name__ == "__main__":
 
     unittest.main()
