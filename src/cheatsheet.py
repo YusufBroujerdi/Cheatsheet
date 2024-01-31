@@ -199,7 +199,23 @@ class CheatSheet:
             raise ValueError('Title name not in use.')
                     
 
-if __name__ == '__main__':
-    pass
 
+class CheatSheetReader:
+
+    cheatsheet : CheatSheet
+
+    def __init__(self, cheatsheet : CheatSheet):
+
+        self.cheatsheet = cheatsheet
+
+
+    @property
+    def current_node(self):
+        return current_node
+  
+    
+
+if __name__ == '__main__':
+
+    pass
 
