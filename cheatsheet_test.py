@@ -2,6 +2,7 @@ import unittest
 from src.cheatsheet import SheetItem
 from src.cheatsheet import CheatSheet
 from src.cheatsheet import Content
+from src.cheatsheet import CheatSheetReader
 import json
 import os
 
@@ -68,11 +69,11 @@ def test_error(error : BaseException, callable):
 
     try:
         callable()
-        assert(False)
+        assert False, "Callable was supposed to fail."
     except error:
-        assert(True)
+        assert True
     except Exception:
-        assert(False)
+        assert False, "Callable failed, but for the wrong reasons."
 
 
 class TestSheetItem(unittest.TestCase):
@@ -127,8 +128,6 @@ class TestLoader(unittest.TestCase):
     def tearDown(self):
         os.remove(self.text_file_path)
 
-def ugh(ug):
-    print(ug[1].owner.title == 'Root')
 
 
 class TestCheatSheet(unittest.TestCase):
@@ -138,12 +137,11 @@ class TestCheatSheet(unittest.TestCase):
 
     def setUp(self):
 
-        self.text_file_path = 'tst.txt'
+        self.text_file_path = 'teest.txt'
         with open(self.text_file_path, 'w') as file:
             file.write(cs_1)
 
         self.cs = CheatSheet(self.text_file_path)
-        # print(self.cs.ct_content[0].owner)
 
 
     def test_edit_methods(self):
@@ -191,8 +189,36 @@ class TestCheatSheet(unittest.TestCase):
         test_error(ValueError, set_title)
 
     def tearDown(self):
+        del self.cs
         os.remove(self.text_file_path)
         
+
+
+class TestReader(unittest.TestCase):
+
+    def setUp(self):
+
+        self.text_file_path = 'tst.txt'
+        with open(self.text_file_path, 'w') as file:
+            file.write(cs_1)
+
+        self.cs = CheatSheet(self.text_file_path)
+        self.csrdr = CheatSheetReader(self.cs)
+
+        
+    def test_access(self):
+
+        def attempt_assignment():
+            self.csrdr.current_node = None
+
+        test_error(AttributeError, attempt_assignment)
+
+
+    def tearDown(self):
+        del self.csrdr
+        del self.cs
+        os.remove(self.text_file_path)
+
     
        
 if __name__ == "__main__":
