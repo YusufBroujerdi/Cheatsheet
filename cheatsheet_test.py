@@ -184,9 +184,13 @@ class TestCheatSheet(unittest.TestCase):
             self.cs.ct_content = SheetItem('Subsection', [])
         test_error(TypeError, set_content)
 
-        # def set_title():
-        #     self.cs.ct_title = 'Section 1'
-        # test_error(ValueError, set_title)
+        def set_title():
+            self.cs.ct_title = 'new_root'
+        test_error(TypeError, set_title)
+
+        def navigate_up_from_root():
+            self.cs.navigate('..')
+        test_error(TypeError, navigate_up_from_root)
 
     def tearDown(self):
         del self.cs
