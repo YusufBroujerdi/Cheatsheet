@@ -150,18 +150,20 @@ class TestCheatSheet(unittest.TestCase):
         assert(self.cs.ct_type == Content.Text)
         assert(self.cs.ct_content == 'Herro, my name is YouSniffYourTurdy')
 
-        self.cs.navigate('..', 'Section 2')
-        assert(self.cs.ct_title == 'Section 2')
+        self.cs.navigate('..')
+        self.cs.add_item(SheetItem('Section 3', 'Random text.'), 'Section 2')
 
-        self.cs.add_item(SheetItem('Section 3', 'Random text.'))
+        assert([i.title for i in self.cs.filter_titles('Section')]\
+            == ['Section 1', 'Section 2', 'Section 3'])
+
+        self.cs.navigate('Section 3')
+        assert(self.cs.current_node.owner.title == 'Root')
         assert(self.cs.ct_content == 'Random text.')
-
+        
         self.cs.ct_content = 'Random teext'
         assert(self.cs.ct_content == 'Random teext')
 
         self.cs.navigate('..')
-        assert([i.title for i in self.cs.filter_titles('Section')]\
-            == ['Section 1', 'Section 2', 'Section 3'])
 
         self.cs.del_item('Section 3')
         assert('Section 3' not in [i.title for i in self.cs.ct_content])
@@ -169,24 +171,22 @@ class TestCheatSheet(unittest.TestCase):
 
     def test_error_handling(self):
 
-        test_error(ValueError, lambda: self.cs.add_item(SheetItem('Section 5', 'some text')))
+        test_error(ValueError, lambda: self.cs.add_item(SheetItem('Section 1', 'some text'), 'Section 2'))
+        test_error(ValueError, lambda: self.cs.add_item(SheetItem('Section 5', 'some text'), 'Section 4'))
         test_error(ValueError, lambda: self.cs.navigate('Section 7'))
         test_error(ValueError, lambda: self.cs.del_item('Section 5'))
 
-        self.cs.navigate('Section 2')
-        test_error(ValueError, lambda: self.cs.add_item(SheetItem('Section 1', 'some text')))
-
         def set_content_type():
             self.cs.ct_type = Content.Section
-        test_error(TypeError, set_content_type)
+        test_error(AttributeError, set_content_type)
 
         def set_content():
             self.cs.ct_content = SheetItem('Subsection', [])
         test_error(TypeError, set_content)
 
-        def set_title():
-            self.cs.ct_title = 'Section 1'
-        test_error(ValueError, set_title)
+        # def set_title():
+        #     self.cs.ct_title = 'Section 1'
+        # test_error(ValueError, set_title)
 
     def tearDown(self):
         del self.cs

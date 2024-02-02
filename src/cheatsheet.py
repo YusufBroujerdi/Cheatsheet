@@ -144,8 +144,6 @@ class CheatSheet:
 
         for title in titles:
 
-            # print(f'{self.ct_title} vs. {title}')
-
             if title == '..':
                 self.current_node = self.current_node.owner
                 continue
@@ -168,22 +166,18 @@ class CheatSheet:
         return l[0]
     
 
-    def add_item(self, item : SheetItem):
+    def add_item(self, item : SheetItem, title : str):
 
-        orig_title = self.ct_title
-        if orig_title == 'Root':
-            raise ValueError('Cannot add a section after Root.')
-
-        self.navigate('..')
         its = self.ct_content
         item.owner = self.current_node
 
         if any([i.title == item.title for i in its]):
-            self.navigate(orig_title)
             raise ValueError('Title name already in use.')
 
-        its.insert(CheatSheet.get_idx(orig_title, its) + 1, item)
-        self.navigate(item.title)
+        if not any([i.title == title for i in its]):
+            raise ValueError('Title to insert after doesn\'t exist.')
+
+        its.insert(CheatSheet.get_idx(title, its) + 1, item)
 
 
     def del_item(self, title : str):
