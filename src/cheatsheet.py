@@ -41,10 +41,6 @@ class SheetItem:
         else:
             return Content.Section
 
-    @content_type.setter
-    def content_type(self, value):
-        raise TypeError('Must change the SheetItem content to change its type.')
-
 
     def parse_sheet_item(node : dict):
         return SheetItem(node['title'], node['content'])
