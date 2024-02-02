@@ -132,12 +132,15 @@ class CheatSheet:
 
     @ct_title.setter
     def ct_title(self, value):
+
+        if self.ct_title == 'Root':
+            raise TypeError('Cannot change the title of root.')
     
         owner_content = self.current_node.owner.content
         if any([i.title == value for i in owner_content]):
             raise ValueError('Title name already in use.')
 
-        self.current_node.title == value
+        self.current_node.title = value
 
 
     def navigate(self, *titles : str):
@@ -145,6 +148,9 @@ class CheatSheet:
         for title in titles:
 
             if title == '..':
+
+                if self.ct_title == 'Root':
+                    raise TypeError('Cannot navigate upwards from root.')
                 self.current_node = self.current_node.owner
                 continue
 
