@@ -3,6 +3,7 @@ from src.cheatsheet import SheetItem
 from src.cheatsheet import CheatSheet
 from src.cheatsheet import Content
 from src.cheatsheet import CheatSheetReader
+import copy
 import json
 import os
 
@@ -44,6 +45,16 @@ js_1 = [SheetItem("Section 1",
                         "Holy moly.....")
                 ])
         ])
+]
+
+js_2 = [
+    SheetItem("Bill", [
+        SheetItem("Fred", [
+            SheetItem("Tim", [
+                SheetItem("Bill", "I'm Bill")
+            ])
+        ])
+    ])
 ]
 
 
@@ -98,6 +109,29 @@ class TestSheetItem(unittest.TestCase):
 
         CheatSheet.add_owners(self.parsed_json, SheetItem('Root', []))
         check_owners(self.parsed_json)
+
+    def test_getting_path(self):
+
+        CheatSheet.add_owners(self.parsed_json, SheetItem('Root', []))
+        obj = self.parsed_json[3].content[0].content[0]
+        assert(obj.get_path() == ['Root', 'Last Subsection', 'Last Subsubsection', 'Last Subsubsubsection'])
+
+    def test_getting_path_errors(self):
+
+        faulty = copy.deepcopy(js_2) 
+        CheatSheet.add_owners(faulty)
+        obj = faulty[0].content[0].content[0].content[0]
+
+        def path_get():
+            return obj.get_path()
+
+        test_error(TypeError, path_get)
+        faulty_2 = SheetItem('Root', faulty)
+        faulty[0].owner = faulty_2
+        test_error(AttributeError, path_get)
+            
+
+        
 
 
 

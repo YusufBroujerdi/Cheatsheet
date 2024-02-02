@@ -46,6 +46,22 @@ class SheetItem:
         return SheetItem(node['title'], node['content'])
 
 
+    def get_path(self, path = []):
+
+        if len(path) != len(set(path)):
+            raise AttributeError('path is cyclical')
+
+        if self.title == 'Root':
+            path.insert(0, 'Root')
+            return path
+
+        if self.owner == None:
+            raise TypeError('path does not link back to Root')
+
+        path.insert(0, self.title)
+        return self.owner.get_path(path)
+
+
 
 class SheetItemEncoder(json.JSONEncoder):
 
