@@ -1,8 +1,6 @@
 from enum import Enum
 from typing import Self
 from typing import List
-from collections.abc import Iterable
-import itertools
 import json
 
 
@@ -223,7 +221,7 @@ class CheatSheetReader:
 
     @property
     def current_node(self):
-        return current_node
+        return self.current_node
   
     
 

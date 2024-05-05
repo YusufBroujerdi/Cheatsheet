@@ -131,9 +131,6 @@ class TestSheetItem(unittest.TestCase):
         test_error(AttributeError, path_get)
             
 
-        
-
-
 
 class TestLoader(unittest.TestCase):
 
