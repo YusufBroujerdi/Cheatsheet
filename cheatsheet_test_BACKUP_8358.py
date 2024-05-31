@@ -129,6 +129,14 @@ class TestSheetItem(unittest.TestCase):
         faulty_2 = SheetItem('Root', faulty)
         faulty[0].owner = faulty_2
         test_error(AttributeError, path_get)
+            
+<<<<<<< HEAD
+=======
+
+        
+
+>>>>>>> 865016499c6c52ba3aac681f2a05cfff0b426e51
+
 
 class TestLoader(unittest.TestCase):
 

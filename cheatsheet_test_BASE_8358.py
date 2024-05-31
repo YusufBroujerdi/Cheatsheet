@@ -3,7 +3,6 @@ from src.cheatsheet import SheetItem
 from src.cheatsheet import CheatSheet
 from src.cheatsheet import Content
 from src.cheatsheet import CheatSheetReader
-import copy
 import json
 import os
 
@@ -45,16 +44,6 @@ js_1 = [SheetItem("Section 1",
                         "Holy moly.....")
                 ])
         ])
-]
-
-js_2 = [
-    SheetItem("Bill", [
-        SheetItem("Fred", [
-            SheetItem("Tim", [
-                SheetItem("Bill", "I'm Bill")
-            ])
-        ])
-    ])
 ]
 
 
@@ -110,25 +99,7 @@ class TestSheetItem(unittest.TestCase):
         CheatSheet.add_owners(self.parsed_json, SheetItem('Root', []))
         check_owners(self.parsed_json)
 
-    def test_getting_path(self):
 
-        CheatSheet.add_owners(self.parsed_json, SheetItem('Root', []))
-        obj = self.parsed_json[3].content[0].content[0]
-        assert(obj.get_path() == ['Root', 'Last Subsection', 'Last Subsubsection', 'Last Subsubsubsection'])
-
-    def test_getting_path_errors(self):
-
-        faulty = copy.deepcopy(js_2) 
-        CheatSheet.add_owners(faulty)
-        obj = faulty[0].content[0].content[0].content[0]
-
-        def path_get():
-            return obj.get_path()
-
-        test_error(TypeError, path_get)
-        faulty_2 = SheetItem('Root', faulty)
-        faulty[0].owner = faulty_2
-        test_error(AttributeError, path_get)
 
 class TestLoader(unittest.TestCase):
 
@@ -179,20 +150,18 @@ class TestCheatSheet(unittest.TestCase):
         assert(self.cs.ct_type == Content.Text)
         assert(self.cs.ct_content == 'Herro, my name is YouSniffYourTurdy')
 
-        self.cs.navigate('..')
-        self.cs.add_item(SheetItem('Section 3', 'Random text.'), 'Section 2')
+        self.cs.navigate('..', 'Section 2')
+        assert(self.cs.ct_title == 'Section 2')
 
-        assert([i.title for i in self.cs.filter_titles('Section')]\
-            == ['Section 1', 'Section 2', 'Section 3'])
-
-        self.cs.navigate('Section 3')
-        assert(self.cs.current_node.owner.title == 'Root')
+        self.cs.add_item(SheetItem('Section 3', 'Random text.'))
         assert(self.cs.ct_content == 'Random text.')
-        
+
         self.cs.ct_content = 'Random teext'
         assert(self.cs.ct_content == 'Random teext')
 
         self.cs.navigate('..')
+        assert([i.title for i in self.cs.filter_titles('Section')]\
+            == ['Section 1', 'Section 2', 'Section 3'])
 
         self.cs.del_item('Section 3')
         assert('Section 3' not in [i.title for i in self.cs.ct_content])
@@ -200,26 +169,24 @@ class TestCheatSheet(unittest.TestCase):
 
     def test_error_handling(self):
 
-        test_error(ValueError, lambda: self.cs.add_item(SheetItem('Section 1', 'some text'), 'Section 2'))
-        test_error(ValueError, lambda: self.cs.add_item(SheetItem('Section 5', 'some text'), 'Section 4'))
+        test_error(ValueError, lambda: self.cs.add_item(SheetItem('Section 5', 'some text')))
         test_error(ValueError, lambda: self.cs.navigate('Section 7'))
         test_error(ValueError, lambda: self.cs.del_item('Section 5'))
 
+        self.cs.navigate('Section 2')
+        test_error(ValueError, lambda: self.cs.add_item(SheetItem('Section 1', 'some text')))
+
         def set_content_type():
             self.cs.ct_type = Content.Section
-        test_error(AttributeError, set_content_type)
+        test_error(TypeError, set_content_type)
 
         def set_content():
             self.cs.ct_content = SheetItem('Subsection', [])
         test_error(TypeError, set_content)
 
         def set_title():
-            self.cs.ct_title = 'new_root'
-        test_error(TypeError, set_title)
-
-        def navigate_up_from_root():
-            self.cs.navigate('..')
-        test_error(TypeError, navigate_up_from_root)
+            self.cs.ct_title = 'Section 1'
+        test_error(ValueError, set_title)
 
     def tearDown(self):
         del self.cs
